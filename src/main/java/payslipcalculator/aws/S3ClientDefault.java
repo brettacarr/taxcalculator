@@ -15,6 +15,10 @@ public class S3ClientDefault implements S3Client {
   private AmazonS3 amazonS3;
 
   public S3ClientDefault() {
+    initS3();
+  }
+
+  private void initS3() {
     AWSCredentials credentials = new BasicAWSCredentials(System.getenv("AWS_ACCESS_KEY"), System.getenv("AWS_SECRET_KEY"));
     amazonS3 = AmazonS3ClientBuilder.standard()
       .withCredentials(new AWSStaticCredentialsProvider(credentials))

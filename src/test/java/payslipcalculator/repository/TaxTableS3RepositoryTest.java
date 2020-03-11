@@ -6,14 +6,17 @@ import payslipcalculator.aws.S3ClientStub;
 import payslipcalculator.payslip.TaxTable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TaxTableS3RepositoryTest {
   private static TaxTableS3Repository repo;
   private static TaxTable taxTable;
+  private static TaxTableS3Repository corruptRepo;
 
   @BeforeAll
   public static void setup() {
     repo = new TaxTableS3Repository(new S3ClientStub());
+    corruptRepo = new TaxTableS3Repository(new S3ClientStub(), "", "employees_invalid_number.csv");
     taxTable = repo.getTaxTable(2018);
   }
 
@@ -35,5 +38,10 @@ class TaxTableS3RepositoryTest {
   @Test
   public void shouldLoadAccumulatedTax() {
     assertEquals(taxTable.getTaxBracket(40000).getAccumulatedTax(),3572);
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenCorruptFile() {
+    assertThrows(RuntimeException.class, () -> corruptRepo.getTaxTable(2008));
   }
 }

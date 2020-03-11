@@ -14,14 +14,23 @@ import java.util.List;
 public class TaxTableS3Repository implements TaxTableRepository {
 
   private S3Client s3Client;
+  private String s3fileName;
+  private String s3bucket;
 
   public TaxTableS3Repository(S3Client s3Client) {
-
+    s3fileName = "tax_tables.csv";
+    s3bucket = "bc-spike-2";
     this.s3Client = s3Client;
   }
 
+  public TaxTableS3Repository(S3Client s3Client, String s3bucket, String s3fileName) {
+    this.s3Client = s3Client;
+    this.s3fileName = s3fileName;
+    this.s3bucket = s3bucket;
+  }
+
   public TaxTable getTaxTable(int year) {
-    InputStream taxTableStream = s3Client.getFileAsStream("bc-spike-2", "tax_tables.csv");
+    InputStream taxTableStream = s3Client.getFileAsStream(s3bucket, s3fileName);
 
     return loadTaxTableForYear(year, taxTableStream);
   }
