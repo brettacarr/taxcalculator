@@ -3,9 +3,17 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin:'application'
-mainClassName = "payslipcalculator.shell.PayslipCLI"
+mainClassName = "payslipcalculator.cli.PayslipCLI"
 
 sourceCompatibility = 1.8
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntime.extendsFrom testRuntime
+}
 
 repositories {
     mavenCentral()
@@ -16,10 +24,36 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
-    compile group: 'com.opencsv', name: 'opencsv', version: '4.0'
+    compile 'com.opencsv:opencsv:4.0'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.734'
+    integrationImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    integrationImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
 
 }
 test {
+    useJUnitPlatform()
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED"
+    }
+}
+
+sourceSets {
+    integration {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration/java')
+        }
+    }
+}
+
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integration.output.classesDirs
+    classpath = sourceSets.integration.runtimeClasspath
+}
+
+integrationTest {
     useJUnitPlatform()
     testLogging {
         events "PASSED", "STARTED", "FAILED", "SKIPPED"

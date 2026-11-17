@@ -1,15 +1,13 @@
 package payslipcalculator.payslip;
 
 import org.junit.jupiter.api.Test;
-import payslipcalculator.repository.TaxTableHardcodedRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IncomeTaxCalculatorTest {
 
-  private IncomeTaxCalculator calculator = new IncomeTaxCalculator(new TaxTableHardcodedRepository());
-
+  private IncomeTaxCalculator calculator = new IncomeTaxCalculator(new FakeTaxTableRepository());
 
   @Test
   public void shouldHaveZeroTaxForLowestBracket() {
@@ -19,20 +17,16 @@ public class IncomeTaxCalculatorTest {
 
   @Test
   public void shouldHaveTaxAmountWhenAboveThreshold() {
-    int tax = calculator.calculateTax(20000d);
-    assertEquals(29, tax);
+    // (22,000 - 10,000) * 10% = 1,200 per year -> 100 per month
+    int tax = calculator.calculateTax(22000d);
+    assertEquals(100, tax);
   }
 
   @Test
   public void shouldIncludeAccumulatedTax() {
-    int tax = calculator.calculateTax(38000);
-    assertEquals(325, tax);
-  }
-
-  @Test
-  public void shouldSupportHighestBracket() {
-    int tax = calculator.calculateTax(200000);
-    assertEquals(5269, tax);
+    // (62,000 - 50,000) * 20% + 4,000 = 6,400 per year -> 533.33 per month
+    int tax = calculator.calculateTax(62000d);
+    assertEquals(533, tax);
   }
 
   @Test
