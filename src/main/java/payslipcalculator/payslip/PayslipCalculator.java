@@ -5,14 +5,15 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaySlipCalculator {
+public class PayslipCalculator implements PayslipService {
 
   private final IncomeTaxCalculator taxCalculator;
 
-  public PaySlipCalculator(IncomeTaxCalculator taxCalculator) {
+  public PayslipCalculator(IncomeTaxCalculator taxCalculator) {
     this.taxCalculator = taxCalculator;
   }
 
+  @Override
   public List<Payslip> calculatePayslips(List<Employee> employees) {
     List<Payslip> payslips = new ArrayList<>();
     for (Employee employee : employees) {

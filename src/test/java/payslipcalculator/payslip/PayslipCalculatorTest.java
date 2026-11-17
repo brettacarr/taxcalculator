@@ -9,9 +9,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PaySlipCalculatorTest {
+class PayslipCalculatorTest {
 
-  private static PaySlipCalculator paySlipService = new PaySlipCalculator(new IncomeTaxCalculator(new TaxTableHardcodedRepository()));
+  private static PayslipCalculator paySlipService = new PayslipCalculator(new IncomeTaxCalculator(new TaxTableHardcodedRepository()));
   private static List<Payslip> payslips  =  null;
 
 
