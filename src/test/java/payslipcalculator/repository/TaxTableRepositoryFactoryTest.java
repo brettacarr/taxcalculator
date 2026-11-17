@@ -13,13 +13,21 @@ class TaxTableRepositoryFactoryTest {
 
   @BeforeAll
   public static void setup() {
-    factory = new TaxTableRepositoryFactory(new S3ClientStub());
+    factory = new TaxTableRepositoryFactory(S3ClientStub::new);
   }
 
   @Test
   public void shouldReturnHardcodedRepo() {
     TaxTableRepository repository = factory.getRepository("hardcoded");
     assertTrue(repository instanceof TaxTableHardcodedRepository);
+  }
+
+  @Test
+  public void shouldNotCreateS3ClientForHardcodedRepo() {
+    TaxTableRepositoryFactory failingS3Factory = new TaxTableRepositoryFactory(() -> {
+      throw new AssertionError("S3 client should not be created");
+    });
+    assertTrue(failingS3Factory.getRepository("hardcoded") instanceof TaxTableHardcodedRepository);
   }
 
   @Test

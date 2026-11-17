@@ -1,6 +1,6 @@
 package payslipcalculator.cli;
 
-import payslipcalculator.aws.S3ClientStub;
+import payslipcalculator.aws.S3ClientDefault;
 import payslipcalculator.payslip.Employee;
 import payslipcalculator.payslip.IncomeTaxCalculator;
 import payslipcalculator.payslip.Payslip;
@@ -33,7 +33,7 @@ public class PayslipCLI {
     }
 
     private static void init(String taxTableLocation) {
-        TaxTableRepository taxTableRepository = new TaxTableRepositoryFactory(new S3ClientStub()).getRepository(taxTableLocation);
+        TaxTableRepository taxTableRepository = new TaxTableRepositoryFactory(S3ClientDefault::new).getRepository(taxTableLocation);
         incomeTaxCalculator = new IncomeTaxCalculator(taxTableRepository);
         paySlipService = new PayslipCalculator(incomeTaxCalculator);
     }
